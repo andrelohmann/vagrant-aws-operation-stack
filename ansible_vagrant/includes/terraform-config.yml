@@ -1,0 +1,37 @@
+---
+  # Create the Terraform State bucket, add the policy from template file, enable versioning
+  - name: create state bucket
+    s3_bucket:
+      name: "{{ tf_state_bucket }}"
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ aws_region }}"
+      policy: "{{ lookup('template','terraform.bucket.policy.json.j2') }}"
+      versioning: no
+      state: present
+      force: yes
+
+  # Create dynamo table for state locking
+  - name: create dynamodb table
+    dynamodb_table:
+      name: "{{ tf_state_dynamo_table }}"
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ aws_region }}"
+      hash_key_name: LockID
+      hash_key_type: STRING
+      read_capacity: 1
+      write_capacity: 1
+      state: present
+
+  - name: create terraform provider file
+    template:
+      src: terraform.provider.tf.j2
+      dest: "/home/vagrant/terraform/provider.tf"
+
+  - name: create terraform backend file
+    template:
+      src: terraform.backend.tf.j2
+      dest: "/home/vagrant/terraform/backend.tf"
+
+...

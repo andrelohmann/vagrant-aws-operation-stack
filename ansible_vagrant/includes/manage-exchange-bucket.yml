@@ -1,0 +1,13 @@
+---
+# an exhange bucket will be needed, to write down global variables like reserved ElasticIPs and SSH keys
+- name: make sure exchange_bucket exists
+  s3_bucket:
+    name: "{{ exchange_bucket }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    policy: "{{ lookup('template','exchange.bucket.policy.json.j2') }}"
+    versioning: no
+    state: present
+    force: yes
+...

@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::{{ exchange_bucket }}",
+      "Principal":{"AWS":"{{ aws_user_arn }}"}
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject"],
+      "Resource": "arn:aws:s3:::{{ exchange_bucket }}/id_rsa",
+      "Principal":{"AWS":"{{ aws_user_arn }}"}
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject"],
+      "Resource": "arn:aws:s3:::{{ exchange_bucket }}/id_rsa.pub",
+      "Principal":{"AWS":"{{ aws_user_arn }}"}
+    }
+  ]
+}

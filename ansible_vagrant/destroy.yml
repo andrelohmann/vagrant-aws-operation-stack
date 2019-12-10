@@ -1,0 +1,68 @@
+---
+- hosts: all
+  become: true
+  become_method: sudo
+
+  tasks:
+  - name: Include custom_vars.yml
+    include_vars:
+      file: custom_vars.yml
+
+  - name: unlock all non-ephemeral instances
+    shell: "awslock unlock --tags=\"OperationEnvironment={{ tf_operation_environment_tag }}\""
+    args:
+      executable: /bin/bash
+    become: yes
+    become_user: vagrant
+
+  - name: destroy the operations stack
+    terraform:
+      project_path: "/home/vagrant/terraform"
+      state: absent
+      variables_file: "/home/vagrant/terraform/vars.tfvars"
+    become: yes
+    become_user: vagrant
+
+  - name: delete state bucket
+    s3_bucket:
+      name: "{{ tf_state_bucket }}"
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ aws_region }}"
+      state: absent
+      force: yes
+
+  - name: delete dynamodb table
+    dynamodb_table:
+      name: "{{ tf_state_dynamo_table }}"
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ aws_region }}"
+      state: absent
+
+  - name: make sure exchange_bucket gets deleted
+    s3_bucket:
+      name: "{{ exchange_bucket }}"
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ aws_region }}"
+      state: absent
+      force: yes
+
+  - name: delete all generated files
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+    - /home/vagrant/terraform/.terraform
+    - /home/vagrant/terraform/backend.tf
+    - /home/vagrant/terraform/provider.tf
+    - /home/vagrant/terraform/vars.tfvars
+    - /home/vagrant/ansible/ansible.log
+    - /home/vagrant/ansible/inventory
+    - /home/vagrant/ansible/galaxy
+    - /home/vagrant/ansible/group_vars/all/vars.yml
+    - /vagrant/ansible_vagrant/ansible.log
+    - /vagrant/ansible_vagrant/roles
+
+...

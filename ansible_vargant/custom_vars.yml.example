@@ -1,5 +1,0 @@
-aws_user: __SYSTEM_USER__ (Linux User who should use aws cli)
-aws_region: eu-central-1
-aws_access_key: __ACCESS_KEY__
-aws_secret_key: __SECRET_KEY__
-terraform_version: 0.12.6

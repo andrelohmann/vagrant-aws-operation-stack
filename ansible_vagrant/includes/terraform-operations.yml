@@ -1,0 +1,38 @@
+---
+
+#- name: terraform init
+#  shell: "terraform init"
+#  args:
+#    chdir: /home/vagrant/terraform/
+#    executable: /bin/bash
+#  become: yes
+#  become_user: vagrant
+
+# Basic deploy of a service
+- name: run terraform
+  terraform:
+    project_path: "/home/vagrant/terraform"
+    state: present
+    force_init: yes
+    variables_file: "/home/vagrant/terraform/vars.tfvars"
+  become: yes
+  become_user: vagrant
+  register: _terraform
+
+- name: set _gitlab_public_ip
+  set_fact:
+    _gitlab_public_ip: "{{ _terraform.outputs.eip.value.ip }}"
+
+- name: set _smtp_credentials_key
+  set_fact:
+    _smtp_credentials_key: "{{ _terraform.outputs.smtp_credentials.value.smtp_key }}"
+
+- name: set _smtp_credentials_secret
+  set_fact:
+    _smtp_credentials_secret: "{{ _terraform.outputs.smtp_credentials.value.smtp_secret }}"
+
+- name: set _smtp_credentials_host
+  set_fact:
+    _smtp_credentials_host: "{{ _terraform.outputs.smtp_credentials.value.smtp_host }}"
+
+...

@@ -1,0 +1,13 @@
+---
+- andrelohmann.root_colored_prompt
+- andrelohmann.docker
+# - andrelohmann.gitlab
+# gitlab 12.4.3 letsencrypt quickfix
+- src: https://github.com/andrelohmann/ansible-role-gitlab
+  version: letsencrypt_quickfix_12-4-3
+  name: andrelohmann.gitlab
+- andrelohmann.gitlab_runner_token
+- andrelohmann.gitlab_docker_runner
+- andrelohmann.iptables
+
+...

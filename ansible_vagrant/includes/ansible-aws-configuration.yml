@@ -1,0 +1,29 @@
+---
+
+- name: create .vault_password
+  copy:
+    content: "{{ vault_password }}"
+    dest: /home/vagrant/.vault_password
+    owner: vagrant
+    group: vagrant
+    mode: 0600
+
+- name: create inventory file
+  template:
+    src: inventory.j2
+    dest: /home/vagrant/ansible/inventory
+
+- name: create vars.yml file
+  template:
+    src: vars.yml.j2
+    dest: /home/vagrant/ansible/group_vars/all/vars.yml
+
+- name: install galaxy roles
+  shell: "ansible-galaxy install -r requirements.yml --force"
+  args:
+    executable: /bin/bash
+    chdir: "/home/vagrant/ansible"
+  become: yes
+  become_user: vagrant
+
+...

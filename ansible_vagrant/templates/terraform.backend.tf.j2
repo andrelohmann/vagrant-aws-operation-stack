@@ -1,0 +1,13 @@
+# this file is managed by Ansible
+# all changes will be overwritten
+
+terraform {
+  backend "s3" {
+    bucket = "{{ tf_state_bucket }}"
+    key    = "terraform.state"
+    region = "{{ aws_region }}"
+    encrypt = true
+    acl = "private"
+    dynamodb_table = "{{ tf_state_dynamo_table }}"
+  }
+}

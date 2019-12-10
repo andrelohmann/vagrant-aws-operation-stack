@@ -1,0 +1,22 @@
+---
+
+- name: pause for 2 minutes
+  pause:
+    minutes: 2
+
+- name: ansible deploy operations instances
+  shell: "ansible-playbook playbook.yml -e 'ansible_python_interpreter=/usr/bin/python3'"
+  args:
+    executable: /bin/bash
+    chdir: "/home/vagrant/ansible"
+  become: yes
+  become_user: vagrant
+
+- name: shutdown all pausable instances
+  shell: "source $HOME/.profile; awspause stop --tags=\"OperationEnvironment={{ tf_operation_environment_tag }}\""
+  args:
+    executable: /bin/bash
+  become: yes
+  become_user: vagrant
+
+...

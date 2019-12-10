@@ -1,0 +1,30 @@
+---
+# All reserved resources within 00_reserved_resources will not change
+# and need to be kept persistent between different users running their
+# own "OperationsStack" Vagrant Machine
+- name: ensure vars.tfvars exists
+  copy:
+    content: ""
+    dest: /home/vagrant/terraform/vars.tfvars
+    force: no
+
+- name: add predefined variables
+  blockinfile:
+    path: "/home/vagrant/terraform/vars.tfvars"
+    block: |
+      # this file is managed by Ansible
+      # all changes will be overwritten
+
+      ami_id = "{{ aws_ami_id }}"
+      public_zone_id = "{{ aws_route53_public_zone_id }}"
+      operations_domain = "{{ aws_route53_zone_domain }}"
+      prefix = "{{ tf_prefix }}"
+      additional_tags = {
+        OperationEnvironment = "{{ tf_operation_environment_tag }}"
+      }
+      dmarc_rua = "{{ tf_dmarc_rua }}"
+      email_identities = [{% if initial_email_identities|length > 0 %}"{{ initial_email_identities | join('", "') }}"{% endif %}]
+
+    marker: "# {mark} add variables from custom_vars.yml"
+
+...

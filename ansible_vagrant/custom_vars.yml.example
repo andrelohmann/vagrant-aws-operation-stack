@@ -1,0 +1,21 @@
+aws_region: __REGION__
+aws_access_key: __ACCESS_KEY__
+aws_secret_key: __SECRET_KEY__
+aws_user_arn: __ADMIN_USER_ARN__
+exchange_bucket: __BUCKET_NAME__
+aws_ami_id: __UBUNTU_BIONIC_AMI_ID__
+aws_route53_public_zone_id: __ROUTE53_ZONE_ID__ # the reserved public zone for the showcase
+aws_route53_zone_domain: __ROUTE53_ZONE_DOMAIN__ # the reserved domain for the showcase
+tf_prefix: __TERRAFORM_PREFIX__ # in case of multiple operations stacks being created within the same account
+tf_state_bucket: __TERRAFORM_STATE_BUCKET_NAME__ # Bucket will be created at runtime
+tf_state_dynamo_table: __TERRAFORM_STATE_DYNAMO_TABLE__ # table will be created at runtime
+tf_operation_environment_tag: __TERRAFORM_OPERATION_ENVIRONMENT_TAG__
+tf_dmarc_rua: __DMARC_RUA_EMAIL__ # DMARC RUA Adresse
+
+vault_password: __VAULT_PASSWORD__ # Vault password for the ansible rollout on aws
+initial_gitlab_admin_password: __GITLAB_PASSWORD__ # 8+ characters, inital password for the gitlab root user
+initial_email_identities: # SES Email Address Identities
+- __YOURMAIL@EXAMPLE.COM
+- __OTHERMAIL@EXAMPLE.COM
+
+run_ansible: False # Run the ansible gitlab deployment on the newly created host

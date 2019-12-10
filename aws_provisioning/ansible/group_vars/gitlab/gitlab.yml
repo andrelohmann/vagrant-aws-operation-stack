@@ -1,0 +1,70 @@
+---
+
+gitlab_domain: "git.{{ aws_route53_zone_domain }}"
+gitlab_ip: "{{ gitlab_public_ip }}"
+gitlab_registry_domain: "docker.{{ aws_route53_zone_domain }}"
+gitlab_release: 12.5.4-ce.0
+gitlab_initial_root_password: "{{ initial_gitlab_admin_password }}"
+gitlab_external_url: "https://git.{{ aws_route53_zone_domain }}"
+gitlab_letsencrypt_enable: True
+gitlab_activate_monitoring: False
+gitlab_registry_external_url: "https://docker.{{ aws_route53_zone_domain }}"
+gitlab_additional_configs:
+- namespace: gitlab_rails
+  var: gitlab_email_enabled
+  value: "true"
+- namespace: gitlab_rails
+  var: gitlab_email_from
+  value: "'noreply@email.{{ aws_route53_zone_domain }}'"
+- namespace: gitlab_rails
+  var: gitlab_email_display_name
+  value: "'git.{{ aws_route53_zone_domain }}'"
+- namespace: gitlab_rails
+  var: gitlab_email_reply_to
+  value: "'noreply@email.{{ aws_route53_zone_domain }}'"
+- namespace: gitlab_rails
+  var: smtp_enable
+  value: "true"
+- namespace: gitlab_rails
+  var: smtp_address
+  value: "'{{ smtp_credentials_host }}'"
+- namespace: gitlab_rails
+  var: smtp_port
+  value: "587"
+- namespace: gitlab_rails
+  var: smtp_user_name
+  value: "'{{ smtp_credentials_key }}'"
+- namespace: gitlab_rails
+  var: smtp_password
+  value: "'{{ smtp_credentials_secret }}'"
+- namespace: gitlab_rails
+  var: smtp_domain
+  value: "'email.{{ aws_route53_zone_domain }}'"
+- namespace: gitlab_rails
+  var: smtp_authentication
+  value: "'login'"
+- namespace: gitlab_rails
+  var: smtp_enable_starttls_auto
+  value: "true"
+gitlab_mattermost_external_url: "https://chat.{{ aws_route53_zone_domain }}"
+gitlab_mattermost_additional_configs:
+  TeamSettings:
+    SiteName: "chat.{{ aws_route53_zone_domain }}"
+  EmailSettings:
+    EnableSignUpWithEmail: False
+    EnableSignInWithEmail: False
+    EnableSignInWithUsername: False
+    SendEmailNotifications: True
+    UseChannelInEmailNotifications: True
+    FeedbackName: "chat.{{ aws_route53_zone_domain }}"
+    FeedbackEmail: "noreply@email.{{ aws_route53_zone_domain }}"
+    ReplyToAddress: "noreply@email.{{ aws_route53_zone_domain }}"
+    SMTPUsername: "{{ smtp_credentials_key }}"
+    SMTPPassword: "{{ smtp_credentials_secret }}"
+    SMTPServer: "{{ smtp_credentials_host }}"
+    SMTPPort: 587
+    ConnectionSecurity: "STARTTLS"
+    EnableSMTPAuth: True
+gitlab_runner_description: "runner.{{ aws_route53_zone_domain }}"
+
+...

@@ -1,0 +1,13 @@
+# this file is managed by Ansible
+# all changes will be overwritten
+
+/**
+ * Use the AWS Provider
+ *
+ * Credentials will be fetched from awscli credentials
+ */
+provider "aws" {
+  # access_key = "${var.access_key}"
+  # secret_key = "${var.secret_key}"
+  region = "{{ aws_region }}"
+}

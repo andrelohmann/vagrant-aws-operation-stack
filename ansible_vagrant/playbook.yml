@@ -1,0 +1,108 @@
+---
+- hosts: all
+  become: true
+  become_method: sudo
+
+  vars:
+    golang_version: '1.11'
+    golang_gopath: go
+    golang_additional_libraries:
+    - golang.org/x/tools/cmd/goimports
+    - github.com/andrelohmann/awspause
+    - github.com/andrelohmann/awslock
+    golang_users:
+    - root
+    - vagrant
+    terraform_version: '0.12.17'
+    aws_user: vagrant # (Linux User who should use aws cli)
+    docker_users:
+    - vagrant
+    required_packages:
+    - dialog
+    - nmap
+    - tcptraceroute
+
+  pre_tasks:
+  - name: Include custom_vars.yml
+    include_vars:
+      file: custom_vars.yml
+
+  - name: install required packages
+    apt:
+      name: "{{ required_packages }}"
+      state: latest
+      dpkg_options: 'force-confnew,force-confdef'
+      autoclean: yes
+      autoremove: yes
+      update_cache: yes
+      cache_valid_time: 3600
+
+  roles:
+  - andrelohmann.root_colored_prompt
+  - andrelohmann.golang
+  - andrelohmann.awscli
+  - andrelohmann.terraform
+
+  tasks:
+
+  - name: copy tmp inventory to /vagrant
+    shell: cp /tmp/vagrant-ansible/inventory/vagrant_ansible_local_inventory /vagrant/inventory; chown vagrant:vagrant /vagrant/inventory;
+    args:
+      creates: /vagrant/inventory
+      executable: /bin/bash
+
+  - name: create an exchange s3 bucket on aws
+    include_tasks: includes/manage-exchange-bucket.yml
+
+  - name: include the ssh key management
+    include_tasks: includes/manage-ssh-key.yml
+
+  - name: copy destroy_aws.sh to /home/vagrant
+    copy:
+      src: destroy_aws.sh
+      dest: /home/vagrant
+      owner: vagrant
+      group: vagrant
+      mode: 0755
+
+  - name: copy up.sh to /home/vagrant
+    template:
+      src: up.sh.j2
+      dest: /home/vagrant/up.sh
+      owner: vagrant
+      group: vagrant
+      mode: 0755
+
+  - name: copy down.sh to /home/vagrant
+    template:
+      src: down.sh.j2
+      dest: /home/vagrant/down.sh
+      owner: vagrant
+      group: vagrant
+      mode: 0755
+
+  # terraform credentials and aws resources
+  - name: set the terraform credentials and create the aws resources for the terreaform state
+    include_tasks: includes/terraform-config.yml
+
+  - name: set the terraform vars
+    include_tasks: includes/terraform-vars.yml
+
+  - name: apply operation stack
+    include_tasks: includes/terraform-operations.yml
+
+  - name: secure all instances from being deleted
+    shell: "source $HOME/.profile; awslock lock --tags=\"OperationEnvironment={{ tf_operation_environment_tag }}\""
+    args:
+      executable: /bin/bash
+    become: yes
+    become_user: vagrant
+
+  - name: configure aws_provisioning ansible
+    include_tasks: includes/ansible-aws-configuration.yml
+
+  - name: run aws_provisioning ansible
+    include_tasks: includes/ansible-aws-provisioning.yml
+    when: run_ansible == True
+
+...

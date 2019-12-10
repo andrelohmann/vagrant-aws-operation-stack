@@ -1,0 +1,14 @@
+---
+
+iptables:
+  #pingables:
+  #- host: "pingable from all hosts"
+  #  ip: 0.0.0.0
+  chains:
+  - name: HTTP/S
+    comment: "web"
+    protocol: tcp # tcp/icmp/udp
+    ports:
+    - 80
+    - 443
+...

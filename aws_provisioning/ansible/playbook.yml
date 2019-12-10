@@ -1,0 +1,14 @@
+---
+- hosts: gitlab
+  become: true
+  become_method: sudo
+
+  roles:
+  - andrelohmann.root_colored_prompt
+  - andrelohmann.docker
+  - andrelohmann.gitlab
+  #- andrelohmann.gitlab_runner_token
+  #- andrelohmann.gitlab_docker_runner
+  #- andrelohmann.iptables
+
+...
