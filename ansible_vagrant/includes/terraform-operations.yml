@@ -27,9 +27,18 @@
   set_fact:
     _smtp_credentials_key: "{{ _terraform.outputs.smtp_credentials.value.smtp_key }}"
 
+# currently the ses_smtp_password is broken - https://github.com/terraform-providers/terraform-provider-aws/issues/11143
+#- name: set _smtp_credentials_secret
+#  set_fact:
+#    _smtp_credentials_secret: "{{ _terraform.outputs.smtp_credentials.value.smtp_secret }}"
+
+- name: run the ses smtp password conversion script
+  script: convert_ses_smtp_password.py --secret {{ _terraform.outputs.smtp_credentials.value.smtp_plain_secret }} --region {{ aws_region }}
+  register: _smtp_secret
+
 - name: set _smtp_credentials_secret
   set_fact:
-    _smtp_credentials_secret: "{{ _terraform.outputs.smtp_credentials.value.smtp_secret }}"
+    _smtp_credentials_secret: "{{ _smtp_secret.stdout | trim }}"
 
 - name: set _smtp_credentials_host
   set_fact:
