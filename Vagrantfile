@@ -4,7 +4,7 @@
 # require necessary plugins
 # for sshfs on windows, follow:
 # https://docs.microsoft.com/de-de/windows-server/administration/openssh/openssh_install_firstuse
-required_plugins = %w( vagrant-vbguest vagrant-sshfs )
+required_plugins = %w( vagrant-vbguest )
 required_plugins.each do |plugin|
   system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
 end
@@ -23,15 +23,10 @@ Vagrant.configure("2") do |config|
     vb.cpus = "1"
   end
 
-  config.vm.provider "hyperv" do |hv|
-      hv.memory = "1024"
-      hv.cpus = "1"
-  end
-
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.synced_folder "ansible_vagrant", "/vagrant/ansible_vagrant", type: "sshfs", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=775"]
-  config.vm.synced_folder "aws_provisioning/terraform", "/home/vagrant/terraform", type: "sshfs", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=775"]
-  config.vm.synced_folder "aws_provisioning/ansible", "/home/vagrant/ansible", type: "sshfs", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=775"]
+  config.vm.synced_folder "ansible_vagrant", "/vagrant/ansible_vagrant", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=775"]
+  config.vm.synced_folder "aws_provisioning/terraform", "/home/vagrant/terraform", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=775"]
+  config.vm.synced_folder "aws_provisioning/ansible", "/home/vagrant/ansible", create: true, owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=775"]
 
   # auto update guest additions
   config.vbguest.auto_update = true
