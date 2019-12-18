@@ -32,16 +32,9 @@ the vagrant machines depends on two vagrant plugins.
 
 ```
 vagrant plugin install vagrant-vbguest
-vagrant plugin install vagrant-sshfs
 ```
 
 these pluins should get installed automatically on a "vagrant up", if that fails anyways, please manually install the plugins by entering the commands
-
-##### Windows
-
-If you are on Microsoft Window, you need to install openssh.
-
-https://docs.microsoft.com/de-de/windows-server/administration/openssh/openssh_install_firstuse
 
 ### AWS
 
