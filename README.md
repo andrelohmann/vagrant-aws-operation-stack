@@ -1,6 +1,6 @@
 # vagrant-aws-operation-stack
 
-(c) Andre Lohmann (and others) 2019
+(c) Andre Lohmann (and others) 2020
 
 ## Maintainer Contact
  * Andre Lohmann

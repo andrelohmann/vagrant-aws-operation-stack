@@ -3,7 +3,7 @@
 gitlab_domain: "git.{{ aws_route53_zone_domain }}"
 gitlab_ip: "{{ gitlab_public_ip }}"
 gitlab_registry_domain: "docker.{{ aws_route53_zone_domain }}"
-gitlab_release: 12.5.5-ce.0
+gitlab_release: 12.6.4-ce.0
 gitlab_initial_root_password: "{{ initial_gitlab_admin_password }}"
 gitlab_external_url: "https://git.{{ aws_route53_zone_domain }}"
 gitlab_letsencrypt_enable: True
